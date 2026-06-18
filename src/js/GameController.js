@@ -56,7 +56,7 @@ export default class GameController {
 
   onCellEnter(index) {
     // TODO: react to mouse enter
-    const positionedCharacters = this.positionedCharacters
+    const positionedCharacters = this.positionedCharacters;
     
   }
 
