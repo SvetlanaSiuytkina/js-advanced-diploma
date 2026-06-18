@@ -48,19 +48,39 @@ export default class GameController {
 
     this.gamePlay.redrawPositions(this.positionedCharacters);
   }
+  
 
-  onCellClick() {
-    // TODO: react to click
-
+  createCharacterTooltip(character) {
+    return `U+1F396${character.level} U+2694${character.attack} U+1F6E1${character.defence}  U+2764${character.health}`;
   }
 
+  onCellClick(index) {
+    // TODO: react to click
+    const character = this.positionedCharacters.find(positChar => positChar.position === index);
+    if (!character) {
+      this.gamePlay.showError('Ячейка пуста');
+      return;
+    }
+    const playerCharacter = character.character;
+
+    if (!['bowman', 'swordsman', 'magician'].includes(playerCharacter.type)) {
+      this.gamePlay.showError('Нельзя выбрать этого персонажа');
+      return;
+    }
+  }
+  
   onCellEnter(index) {
     // TODO: react to mouse enter
-    const positionedCharacters = this.positionedCharacters;
+    const positionedCharacter = this.positionedCharacters.find(positChar => positChar.position === index);
     
+    if (positionedCharacter) {
+      const tooltip = this.createCharacterTooltip(positionedCharacter.character);
+      this.gamePlay.showCellTooltip(tooltip, index);
+    }
   }
-
-  onCellLeave() {
+  
+  onCellLeave(index) {
     // TODO: react to mouse leave
+    this.gamePlay.hideCellTooltip(index);
   }
 }
