@@ -126,7 +126,70 @@ export default class GameController {
   }
 
   computerTurn() {
+    const opponentCharacters = this.positionedCharacters.filter(positChar => ['vampire', 'undead', 'daemon'].includes(positChar.character.type));
+    const playerCharacters = this.positionedCharacters.filter(positChar => ['bowman', 'swordsman', 'magician'].includes(positChar.character.type));
 
+    for (const opponent of opponentCharacters) {
+      for (const player of playerCharacters) {
+        if (this.canAttack(player.position, opponent)) {
+          this.perfomAttack(opponent, player);
+          return;
+        }
+      }
+    }
+    //если не атаковал, перемещ
+    this.perfomRandomMove(opponentCharacters);
+  }
+
+  //расчет урона от атаки
+  async perfomAttack(attacker, target) {
+    //мин 10% урона-выбираем большее из атака-защита или 10% атаки
+    const damage = Math.max(attacker.character.attack - target.character.defence, attacker.character.attack * 0.1);
+    
+    await this.gamePlay.showDamage(target.position, damage);
+    target.character.health -= damage;
+
+    //умер-убираем
+    if (target.character.health <= 0) {
+      const index = this.positionedCharacters.indexOf(target);
+      this.positionedCharacters.splice(index, 1);
+    }
+
+    this.gamePlay.redrawPositions(this.positionedCharacters);
+    this.switchTurn();
+  }
+
+  //выбирает случ противника, перемещает его
+  perfomRandomMove(characters) {
+    const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+    const possibleMovesPosition = this.getPossibleMoves(randomCharacter);
+
+    if (possibleMovesPosition.length > 0) {
+      const newPosition = possibleMovesPosition[Math.floor(Math.random() * possibleMovesPosition.length)];
+      randomCharacter.position = newPosition;
+      this.gamePlay.redrawPositions(this.positionedCharacters);
+    }
+    this.switchTurn();
+  }
+
+  //возможн позиции для перемещ
+  getPossibleMoves(character) {
+    const moves = [];
+    const range = this.getMovementRange(character.character.type);
+    const currentX = character.position % 8;
+    const currentY = Math.floor(character.position / 8);
+
+    for (let x = currentX - range; x <= currentX + range; x++) {
+      for(let y = currentY - range; y <= currentY + range; y++) {
+        if (x >= 0 && x < 8 && y >= 0 && y < 8) {
+          const position = y * 8 + x;
+          if (!this.positionedCharacters.some(positChar => positChar === position)) {
+            moves.push(position);
+          }
+        }
+      }
+    }
+    return moves;
   }
   
   onCellEnter(index) {
