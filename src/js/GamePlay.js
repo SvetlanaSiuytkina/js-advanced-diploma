@@ -4,7 +4,6 @@ export default class GamePlay {
   constructor() {
     this.boardSize = 8;
     this.container = null;
-    this.boardEl = null;
     this.cells = [];
     this.cellClickListeners = [];
     this.cellEnterListeners = [];
@@ -12,6 +11,9 @@ export default class GamePlay {
     this.newGameListeners = [];
     this.saveGameListeners = [];
     this.loadGameListeners = [];
+
+    this.boardEl = null;
+    this.newGameEl = null;
   }
 
   bindToDOM(container) {
@@ -227,5 +229,15 @@ export default class GamePlay {
     if (this.container === null) {
       throw new Error('GamePlay not bind to DOM');
     }
+  }
+
+  // блок поля
+  disableBoard() {
+    this.boardEl.style.pointerEvents = 'none';
+  }
+
+  // разблок поля
+  enableBoard() {
+    this.boardEl.style.pointerEvents = 'auto';
   }
 }

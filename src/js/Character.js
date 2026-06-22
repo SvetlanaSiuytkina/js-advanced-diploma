@@ -18,7 +18,7 @@ export default class Character {
       throw new Error('Нельзя создать экземпляр класса Character');    //
     }
 
-    this.level = level;
+    this.level = 1;
     this.attack = 0;
     this.defence = 0;
     this.health = 50;
