@@ -8,8 +8,8 @@ const themes = {
 export default themes;
 
 export const levelThemeMap = {
-  Level1: themes.prairie,
-  Level2: themes.desert,
-  Level3: themes.arctic,
-  Level4: themes.mountain
+  Level1: 'prairie',
+  Level2: 'desert',
+  Level3: 'arctic',
+  Level4: 'mountain'
 };

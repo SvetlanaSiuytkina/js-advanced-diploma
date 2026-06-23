@@ -1,4 +1,5 @@
 import themes from './themes.js';
+import { levelThemeMap } from './themes.js';
 import Bowman from './characters/Bowman.js';
 import Daemon from './characters/Daemon.js';
 import Magician from './characters/Magician.js';
@@ -380,8 +381,9 @@ export default class GameController {
 
   //смена фона
   changeTheme() {
-    const themes = [themes.prairie, themes.desert, themes.arctic, themes.mountain];
-    this.gamePlay.drawUi(themes[this.currentLevel - 1]);
+    const levelKey = `Level${this.currentLevel}`;
+    const themeName = levelThemeMap[levelKey];
+    this.gamePlay.drawUi(themeName);
   }
 
   // восст здор 
