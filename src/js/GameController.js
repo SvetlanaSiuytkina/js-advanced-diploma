@@ -10,6 +10,7 @@ import { generateTeam } from './generators.js';
 import PositionedCharacter from './PositionedCharacter.js';
 import cursors from './cursors.js';
 import GameState from './GameState.js';
+import GamePlay from './GamePlay.js';
 
 
 export default class GameController {
@@ -47,7 +48,7 @@ export default class GameController {
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
 
-    this.gamePlay.addNewGameListener(this.onNewGame.bind(this));
+    this.gamePlay.addNewGameListener(this.buttonNewGame.bind(this));
     this.gamePlay.addCellClickListener(this.onCellClick.bind(this));
     this.gamePlay.addCellEnterListener(this.onCellEnter.bind(this));
     this.gamePlay.addCellLeaveListener(this.onCellLeave.bind(this));
@@ -84,28 +85,27 @@ export default class GameController {
   async onCellClick(index) {
     // TODO: react to click
     if (this.currentPlayer !== 'player') return;
-
-    const positionedCharacter = this.positionedCharacters.find(positChar => 
-      positChar.position === index);
     
-    if (!positionedCharacter) {
-      this.gamePlay.showError('Ячейка пуста');
+    if (!this.selectedCharacter) {
+      const positionedCharacter = this.positionedCharacters.find(positChar =>
+        positChar.position === index);
+    
+      if (!positionedCharacter) {
+        GamePlay.showError('Ячейка пуста');
+        return;
+      }
+      
+      const playerCharacter = ['bowman', 'swordsman', 'magician'].includes(positionedCharacter.character.type);
+      
+      if (!playerCharacter) {
+        GamePlay.showError('Нельзя выбрать этого персонажа');
+        return;
+      }
+    
+      this.selectedCharacter = positionedCharacter;
+      this.gamePlay.selectCell(index);
       return;
     }
-
-    const playerCharacter = ['bowman', 'swordsman', 'magician'].includes(positionedCharacter.character.type);
-    
-    if (!playerCharacter) {
-      this.gamePlay.showError('Нельзя выбрать этого персонажа');
-      return;
-    }
-
-    if (this.selectedCharacter) {
-      this.gamePlay.deselectCell(this.selectedCharacter.position);
-    }
-
-    this.selectedCharacter = positionedCharacter;
-    this.gamePlay.selectCell(index);
 
     //логика перемещ
     if (this.selectedCharacter && this.canMoveTo(index, this.selectedCharacter)) {
@@ -228,7 +228,7 @@ export default class GameController {
   onCellEnter(index) {
     // TODO: react to mouse enter
     if (this.selectedCharacter) {
-      const canMove = this.canMove(index, this.selectedCharacter);
+      const canMove = this.canMoveTo(index, this.selectedCharacter);
       const canAttack = this.canAttack(index, this.selectedCharacter);
 
       if (canMove && !canAttack) {
