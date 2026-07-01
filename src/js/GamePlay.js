@@ -189,11 +189,23 @@ export default class GamePlay {
 
   selectCell(index, color = 'yellow') {
     this.deselectCell(index);
-    this.cells[index].classList.add('selected', `selected-${color}`);
+
+    const cell = this.cells[index];
+
+    if(!cell) {
+      return;
+    }
+    
+    cell.classList.add('selected', `selected-${color}`);
   }
 
   deselectCell(index) {
     const cell = this.cells[index];
+
+    if (!cell) {
+      return;
+    }
+
     cell.classList.remove(...Array.from(cell.classList)
       .filter(o => o.startsWith('selected')));
   }

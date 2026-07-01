@@ -23,8 +23,7 @@ export default class GameController {
     this.currentLevel = 1;
     this.maxScore = 0;
     this.currentScore = 0;
-
-    this.loadGameState();
+    this.themes = ['prairie', 'desert', 'arctic', 'mountain'];
   }
 
   // загруз сохр сост
@@ -216,7 +215,9 @@ export default class GameController {
       for(let y = currentY - range; y <= currentY + range; y++) {
         if (x >= 0 && x < 8 && y >= 0 && y < 8) {
           const position = y * 8 + x;
-          if (!this.positionedCharacters.some(positChar => positChar === position)) {
+          const isOccupied = this.positionedCharacters.some(positChar => positChar.position === position);
+
+          if (!isOccupied) {
             moves.push(position);
           }
         }

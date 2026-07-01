@@ -25,16 +25,18 @@
 export function calcTileType(index, boardSize) {
   const row = Math.floor(index / boardSize);
   const column = index % boardSize;
+  const lastRow = boardSize - 1;
+  const lastColumn = boardSize - 1;
 
   if (row === 0 && column === 0) return 'top-left';
-  if (row === 0 && column === 7) return 'top-right';
-  if (row === 7 && column === 0) return 'bottom-left';
-  if (row === 7 && column === 7) return 'bottom-right';
+  if (row === 0 && column === lastColumn) return 'top-right';
+  if (row === lastRow && column === 0) return 'bottom-left';
+  if (row === lastRow && column === lastColumn) return 'bottom-right';
 
   if (row === 0) return 'top';
-  if (row === 7) return 'bottom';
+  if (row === lastRow) return 'bottom';
   if (column === 0) return 'left';
-  if (column === 7) return 'right';
+  if (column === lastColumn) return 'right';
 
   return 'center';
 }
